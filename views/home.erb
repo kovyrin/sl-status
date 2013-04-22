@@ -21,8 +21,6 @@
       <p>
         If you want to get information about all Softlayer's scheduled maintenances, just add the following calendar feed URL to your Calendar application:
         <pre>webcal://sl-status.herokuapp.com/softlayer.ics</pre>
-
-        For more information on how to use calendar feeds with the most popular calendar applications, check out <a href="http://mcb.berkeley.edu/academic-programs/seminars/ical-feed-instructions/">this page</a>.
       </p>
 
       <p>
@@ -30,6 +28,24 @@
         <pre>webcal://sl-status.herokuapp.com/softlayer.ics?dc=DATACENTERS</pre>
         where <code>DATACENTERS</code> is a comma-delimited list of datacenter names
         (e.g. <tt>DAL01</tt>, <tt>DAL05</tt>, <tt>SNG01</tt>, etc).
+      </p>
+
+      <p>
+        Here is a list of links that when clicked should automatically add the feeds to your default calendar application:
+        <ul>
+          <li><a href="webcal://sl-status.herokuapp.com/softlayer.ics">All datacenters</a></li>
+          <li><a href="webcal://sl-status.herokuapp.com/softlayer.ics?dc=DAL01,DAL05,DAL07">Dallas, TX datacenters</a></li>
+          <li><a href="webcal://sl-status.herokuapp.com/softlayer.ics?dc=HOU02">Houston, TX Datacenter</a></li>
+          <li><a href="webcal://sl-status.herokuapp.com/softlayer.ics?dc=SJC01">San Jose, CA Datacenter</a></li>
+          <li><a href="webcal://sl-status.herokuapp.com/softlayer.ics?dc=WDC01">Washington, DC Datacenter</a></li>
+          <li><a href="webcal://sl-status.herokuapp.com/softlayer.ics?dc=SEA01">Seattle, WA Datacenter</a></li>
+          <li><a href="webcal://sl-status.herokuapp.com/softlayer.ics?dc=AMS01">Amsterdam Datacenter</a></li>
+          <li><a href="webcal://sl-status.herokuapp.com/softlayer.ics?dc=SNG01">Singapore Datacenter</a></li>
+        </ul>
+      </p>
+
+      <p>
+        For more information on how to use calendar feeds with the most popular calendar applications, check out <a href="http://mcb.berkeley.edu/academic-programs/seminars/ical-feed-instructions/">this page</a>.
       </p>
 
       <h2>Show me the code!</h2>
