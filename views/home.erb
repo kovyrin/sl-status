@@ -20,14 +20,14 @@
       <h2>How to use it?</h2>
       <p>
         If you want to get information about all Softlayer's scheduled maintenances, just add the following calendar feed URL to your Calendar application:
-        <pre>http://sl-status.herokuapp.com/softlayer.ics</pre>
+        <pre>webcal://sl-status.herokuapp.com/softlayer.ics</pre>
 
         For more information on how to use calendar feeds with the most popular calendar applications, check out <a href="http://mcb.berkeley.edu/academic-programs/seminars/ical-feed-instructions/">this page</a>.
       </p>
 
       <p>
         If you only want to see information about specific datacenters, use the following URL format:
-        <pre>http://sl-status.herokuapp.com/softlayer.ics?dc=DATACENTERS</pre>
+        <pre>webcal://sl-status.herokuapp.com/softlayer.ics?dc=DATACENTERS</pre>
         where <code>DATACENTERS</code> is a comma-delimited list of datacenter names
         (e.g. <tt>DAL01</tt>, <tt>DAL05</tt>, <tt>SNG01</tt>, etc).
       </p>
