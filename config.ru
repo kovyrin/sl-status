@@ -2,31 +2,32 @@ require "rubygems"
 require "bundler/setup"
 require "sinatra/base"
 require "date"
-
 require "icalendar"
-
 require "feedzirra"
-require "pp"
 
+ROOT_DIR = File.dirname(__FILE__)
+
+#---------------------------------------------------------------------------------------------------
+# Configure SL-specific feed item fields
 Feedzirra::Feed.add_common_feed_entry_element("softlayer:location",  :as => :sl_location)
 Feedzirra::Feed.add_common_feed_entry_element("softlayer:service",   :as => :sl_service)
 Feedzirra::Feed.add_common_feed_entry_element("softlayer:startdate", :as => :sl_start_date)
 Feedzirra::Feed.add_common_feed_entry_element("softlayer:enddate",   :as => :sl_end_date)
 
-ONE_WEEK = 3600 * 60 * 24 * 7
-
+#---------------------------------------------------------------------------------------------------
 class SoftlayerStatus < Sinatra::Base
+  set :public_folder, "#{ROOT_DIR}/public"
+  set :views, "#{ROOT_DIR}/views"
+
+  # Render home page
+  get '/' do
+    erb :home
+  end
+
+  # Render softlayer feed
   get "/softlayer.ics" do
-    start_time = params[:start] ? Time.parse(params[:start]) : nil
-    end_time = params[:end] ? Time.parse(params[:end]) : nil
-    datacenters = [ *params[:dc] ].flatten
-
-    events = get_softlayer_events(
-      :start => start_time,
-      :end => end_time,
-      :datacenters => datacenters
-    )
-
+    datacenters = [ *params[:dc] ].flatten.compact.map { |dc| dc.split(',') }.flatten.uniq
+    events = get_softlayer_events(:datacenters => datacenters)
     format_ical_feed(events)
   end
 
@@ -48,7 +49,7 @@ class SoftlayerStatus < Sinatra::Base
       ical.add(ievent)
     end
 
-    content_type "text/plain"
+    content_type "text/calendar"
     ical.to_ical
   end
 
@@ -60,8 +61,6 @@ class SoftlayerStatus < Sinatra::Base
     feed.entries.each do |entry|
       event = parse_feed_entry(entry)
       next if limits[:datacenters].any? && (limits[:datacenters] & event.datacenters).empty?
-      next if limits[:start] && (event.end_time < limits[:start])
-      next if limits[:end] && (event.start_time > limits[:end])
       events << event
     end
 
@@ -71,15 +70,24 @@ class SoftlayerStatus < Sinatra::Base
   def parse_feed_entry(entry)
     event = {}
     dc = entry.sl_location.split(/\W+/).compact.uniq.sort
-    event[:title] = "#{dc.join('/')}: #{entry.sl_service}"
     event[:datacenters] = dc
-    event[:description] = entry.summary
+
+    # SL status feed has completely fucked up timestamp format and the time is skewed by +5 hours
     event[:start_time] = Time.parse(entry.sl_start_date.gsub('GMT+0000', 'UTC')) - 3600 * 5
     event[:end_time] = Time.parse(entry.sl_end_date.gsub('GMT+0000', 'UTC')) - 3600 * 5
+
+    length = (event[:end_time] - event[:start_time]) / 3600
+    event[:title] = "#{dc.join('/')}: #{entry.sl_service} (#{length.to_i} hours)"
+
+    if entry.summary
+      body = entry.summary
+      body.gsub!(/^.*={50,}(.*)={50,}.*/m, '\1')
+      event[:description] = body
+    end
+
     OpenStruct.new(event)
   end
 end
 
-
-#--------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 run SoftlayerStatus

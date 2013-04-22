@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Softlayer Status iCal Feed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Softlayer Status iCal Feed</h1>
+      <br>
+
+      <h2>What is this?</h2>
+      <p>
+        Have you ever wanted to see the information about the upcoming Softlayer maintenance events in your calendar? This small application is created to help you with that. It pulld the data from the official <a href="http://status.softlayer.com/">Softlayer status page</a> and provides you with an <a href="http://en.wikipedia.org/wiki/ICalendar">ICalendar</a> (RFC-2445) compatible feed that could be added to Apple Calendar, Google Calendar or other
+        <a href="http://en.wikipedia.org/wiki/List_of_applications_with_iCalendar_support">compatible clients</a>.
+      </p>
+
+      <h2>How to use it?</h2>
+      <p>
+        If you want to get information about all Softlayer's scheduled maintenances, just add the following calendar feed URL to your Calendar application:
+        <pre>http://sl-status.herokuapp.com/softlayer.ics</pre>
+
+        For more information on how to use calendar feeds with the most popular calendar applications, check out <a href="http://mcb.berkeley.edu/academic-programs/seminars/ical-feed-instructions/">this page</a>.
+      </p>
+
+      <p>
+        If you only want to see information about specific datacenters, use the following URL format:
+        <pre>http://sl-status.herokuapp.com/softlayer.ics?dc=DATACENTERS</pre>
+        where <code>DATACENTERS</code> is a comma-delimited list of datacenter names
+        (e.g. <tt>DAL01</tt>, <tt>DAL05</tt>, <tt>SNG01</tt>, etc).
+      </p>
+
+      <h2>Show me the code!</h2>
+      <p>
+        This application's has been created by <a href="http://kovyrin.net/">Oleksiy Kovyrin</a> and the source code is <a href="https://github.com/kovyrin/sl-status">available on GitHub</a> under the MIT license. If you have any ideas on how to make it better, feel free to send pull requests.
+      </p>
+    </div>
+  </body>
+</html>
