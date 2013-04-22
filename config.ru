@@ -17,8 +17,8 @@ ONE_WEEK = 3600 * 60 * 24 * 7
 
 class SoftlayerStatus < Sinatra::Base
   get "/softlayer.ics" do
-    start_time = params[:start] ? Time.parse(params[:start]) : (Time.now - ONE_WEEK)
-    end_time = params[:end] ? Time.parse(params[:end]) : (start_time + 4 * ONE_WEEK)
+    start_time = params[:start] ? Time.parse(params[:start]) : nil
+    end_time = params[:end] ? Time.parse(params[:end]) : nil
     datacenters = [ *params[:dc] ].flatten
 
     events = get_softlayer_events(
@@ -53,10 +53,19 @@ class SoftlayerStatus < Sinatra::Base
   end
 
   def get_softlayer_events(limits = {})
+    puts "Limits: #{limits.inspect}"
     feed = Feedzirra::Feed.fetch_and_parse("http://rss.softlayer.com/maintenance.xml")
-    feed.entries.map do |entry|
-      parse_feed_entry(entry)
+    events = []
+
+    feed.entries.each do |entry|
+      event = parse_feed_entry(entry)
+      next if limits[:datacenters].any? && (limits[:datacenters] & event.datacenters).empty?
+      next if limits[:start] && (event.end_time < limits[:start])
+      next if limits[:end] && (event.start_time > limits[:end])
+      events << event
     end
+
+    events.sort_by { |e| e.start_time }
   end
 
   def parse_feed_entry(entry)
