@@ -79,11 +79,9 @@ class SoftlayerStatus < Sinatra::Base
     length = (event[:end_time] - event[:start_time]) / 3600
     event[:title] = "#{dc.join('/')}: #{entry.sl_service} (#{length.to_i} hours)"
 
-    if entry.summary
-      body = entry.summary
-      body.gsub!(/^.*={50,}(.*)={50,}.*/m, '\1')
-      event[:description] = body
-    end
+    body = entry.summary
+    body = body.gsub(/^.*={50,}(.*)={50,}.*/m, '\1').split("\n").map { |l| l.gsub(/[\s\=]+$/, '').strip }.join("\n")
+    event[:description] = body.strip
 
     OpenStruct.new(event)
   end
