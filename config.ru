@@ -72,9 +72,8 @@ class SoftlayerStatus < Sinatra::Base
     dc = entry.sl_location.split(/\W+/).compact.uniq.sort
     event[:datacenters] = dc
 
-    # SL status feed has completely fucked up timestamp format and the time is skewed by +5 hours
-    event[:start_time] = Time.parse(entry.sl_start_date.gsub('GMT+0000', 'UTC')) - 3600 * 5
-    event[:end_time] = Time.parse(entry.sl_end_date.gsub('GMT+0000', 'UTC')) - 3600 * 5
+    event[:start_time] = Time.parse(entry.sl_start_date.gsub('GMT+0000', 'UTC'))
+    event[:end_time] = Time.parse(entry.sl_end_date.gsub('GMT+0000', 'UTC'))
 
     length = (event[:end_time] - event[:start_time]) / 3600
     event[:title] = "#{dc.join('/')}: #{entry.sl_service} (#{length.to_i} hours)"
